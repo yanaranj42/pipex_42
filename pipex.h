@@ -6,7 +6,7 @@
 /*   By: yanaranj <yanaranj@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:08:31 by yanaranj          #+#    #+#             */
-/*   Updated: 2024/04/15 18:37:38 by yanaranj         ###   ########.fr       */
+/*   Updated: 2024/04/16 12:17:58 by yanaranj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ void	parent_process(char *envp[], char *outfile, t_pipe *px, int fd[]);
 //		--error.c--		//
 void	print_error(char *msg, int flag, t_pipe *px);
 void	ft_free(t_pipe *px);
+char	*ft_substr_path(char *s, int start, int len);
 
 //		--utils.c--		//
 char	**final_cmd(char *s, t_pipe *pipex, int i);

@@ -6,7 +6,7 @@
 /*   By: yanaranj <yanaranj@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:07:58 by yanaranj          #+#    #+#             */
-/*   Updated: 2024/04/15 18:53:08 by yanaranj         ###   ########.fr       */
+/*   Updated: 2024/04/16 13:49:57 by yanaranj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,7 @@ void	parsing(char **av, char *envp[], t_pipe *px)
 	i = -1;
 	init_pipex(px);
 	px->in_cmd = final_cmd(av[2], px, -1);
-	printf("in cdm: %s\n", px->in_cmd[0]);
 	px->out_cmd = final_cmd(av[3], px, -1);
-	printf("out cmd: %s\n", px->out_cmd[0]);
 	while(envp[++i])
 	{
 		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
@@ -88,7 +86,7 @@ void	parent_process(char *envp[], char *outfile, t_pipe *px, int fd[])
 		print_error(px->out_cmd[0], 0, px);
 }
 
-int	main(int ac, char **av, char **envp)
+int	main(int ac, char **av, char *envp[])
 {
 	t_pipe	*px;
 	int		pid;

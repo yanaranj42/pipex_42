@@ -6,7 +6,7 @@
 /*   By: yanaranj <yanaranj@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:23:25 by yanaranj          #+#    #+#             */
-/*   Updated: 2024/04/15 14:05:29 by yanaranj         ###   ########.fr       */
+/*   Updated: 2024/04/16 14:07:44 by yanaranj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,47 @@ void	ft_free(t_pipe *px)
 		px->in_cmd = NULL;
 		px->out_cmd = NULL;
 	}
+}
+
+void	check_access(t_pipe *px, char **cmd, char **path)
+{
+	if (ft_strchr(cmd[0], '/'))
+	{
+		if (access(cmd[0], F_OK) == 0)
+		{
+			if (access(cmd[0], X_OK) != 0)
+				print_error(ft_strjoin(cmd[0], "- permission denied2\n"), \
+					   126, px);
+			*path = ft_strdup(cmd[0]);
+		}
+		else
+			print_error(ft_strjoin(cmd[0], "- command not found2\n"), 127, px);
+	}
+	else
+		*path = ft_strdup(check_paths(px->paths, cmd[0], px));
+}
+
+char *check_paths(char **paths, char *cmd, t_pipe *px)
+{
+	char	*p;
+
+	while (paths[++px->i])
+	{
+		p = ft_strjoin(paths[px->i], cmd);
+		if (!p)
+		{
+			ft_free(px);
+			print_error("malloc error", 0, NULL);
+		}
+		if (access(p, F_OK) == 0)
+		{
+			if (access(p, X_OK) != 0)
+				print_error(ft_strjoin(cmd, ": permission denied1\n"), \
+						126, px);
+			else
+				return (p);
+		}
+	}
+	print_error(ft_strjoin(cmd, ": command not found1\n"), 127, px);
+	return (NULL);
 }

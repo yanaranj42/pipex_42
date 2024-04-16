@@ -6,7 +6,7 @@
 /*   By: yanaranj <yanaranj@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 14:15:38 by yanaranj          #+#    #+#             */
-/*   Updated: 2024/04/15 18:52:55 by yanaranj         ###   ########.fr       */
+/*   Updated: 2024/04/16 14:07:50 by yanaranj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,28 +98,4 @@ char	*ft_substr_slash(char *s, int start, int len, int i)
 		return (0);
 }
 
-char *check_paths(char **paths, char *cmd, t_pipe *px)
-{
-	char	*p;
-
-	while (paths[++px->i])
-	{
-		p = ft_strjoin(paths[px->i], cmd);
-		if (!p)
-		{
-			ft_free(px);
-			print_error("malloc error", 0, NULL);
-		}
-		if (access(p, F_OK) == 0)
-		{
-			if (access(p, X_OK) != 0)
-				print_error(ft_strjoin(cmd, ": permission denied1\n"), \
-						126, px);
-			else
-				return (p);
-		}
-	}
-	print_error(ft_strjoin(cmd, ": command not found1\n"), 127, px);
-	return (NULL);
-}
 
