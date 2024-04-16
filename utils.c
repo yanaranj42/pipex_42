@@ -6,34 +6,11 @@
 /*   By: yanaranj <yanaranj@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 14:05:48 by yanaranj          #+#    #+#             */
-/*   Updated: 2024/04/16 14:07:48 by yanaranj         ###   ########.fr       */
+/*   Updated: 2024/04/16 19:01:21 by yanaranj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-char	*ft_substr_path(char *s, int start, int len)
-{
-	char	*sub;
-	int		i;
-
-	if (start >= len)
-		return (ft_strdup(""));
-	if (len > len - start)
-		len = len - start;
-	sub = malloc(sizeof(char *) * len + 2);
-	if (!sub)
-		return (NULL);
-	i = 0;
-	while (i < len)
-	{
-		sub[i] = s[i + start];
-		i++;
-	}
-	sub[i] = '/';
-	sub[i + 1] = '\0';
-	return (sub);
-}
 
 char	**del_quotes(t_pipe *px, char *s, char c, char **arr)
 {
@@ -75,8 +52,32 @@ char	**ft_split_quote(t_pipe *px, char *s, char c)
 	px->flag = 0;
 	return (del_quotes(px, s, c, arr));
 }
+char	*ft_substr_path(char *s, int start, int len)
+{
+	char	*sub;
+	int		i;
+	int		size;
 
-char	**ft_split_pipex(t_pipe *pipex, char *s, char c, int i)
+	size = ft_strlen(s);
+	if (start >= size)
+		return (ft_strdup(""));
+	if (len > size - start)
+		len = size - start;
+	sub = malloc(sizeof(char *) * len + 2);
+	if (!sub)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		sub[i] = s[i + start];
+		i++;
+	}
+	sub[i] = '/';
+	sub[i + 1] = '\0';
+	return (sub);
+}
+
+char	**ft_split_pipex(t_pipe *pipex, char *s, char c, int i, int flag)
 {
 	int		k;
 	char	**path;
@@ -94,7 +95,10 @@ char	**ft_split_pipex(t_pipe *pipex, char *s, char c, int i)
 			start = i;
 		if (s[i] != c && (s[i + 1] == c || s[i + 1] == '\0'))
 		{
-			path[++k] = ft_substr_path(s, start, (i - start + 1));
+			if (flag == 1)
+				path[++k] = ft_substr(s, start, (i - start + 1));
+			else
+				path[++k] = ft_substr_path(s, start, (i - start + 1));
 			if (!path[k] && k > 0)
 			{
 				ft_free(pipex);
@@ -119,7 +123,7 @@ char	**final_cmd(char *s, t_pipe *pipex, int i)
 			break ;
 		}
 		if (!first)
-			return (ft_split_pipex(pipex, s, ' ', -1));
+			return (ft_split_pipex(pipex, s, ' ', -1, 1));
 		else
 			return (ft_split_quote(pipex, s, first));
 	}

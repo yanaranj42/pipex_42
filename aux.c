@@ -6,7 +6,7 @@
 /*   By: yanaranj <yanaranj@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 14:15:38 by yanaranj          #+#    #+#             */
-/*   Updated: 2024/04/16 14:07:50 by yanaranj         ###   ########.fr       */
+/*   Updated: 2024/04/16 19:01:36 by yanaranj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,5 +97,3 @@ char	*ft_substr_slash(char *s, int start, int len, int i)
 	else
 		return (0);
 }
-
-

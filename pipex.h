@@ -6,7 +6,7 @@
 /*   By: yanaranj <yanaranj@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:08:31 by yanaranj          #+#    #+#             */
-/*   Updated: 2024/04/16 12:17:58 by yanaranj         ###   ########.fr       */
+/*   Updated: 2024/04/16 18:55:52 by yanaranj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,28 +41,28 @@ typedef struct s_pipe
 }			t_pipe;
 
 //		--main.c--		//
-void	parsing(char **av, char *envp[], t_pipe *px);
-void	init_pipex(t_pipe *pipex);
 void	child_process(char *envp[], char *infile, t_pipe *px, int fd[]);
 void	parent_process(char *envp[], char *outfile, t_pipe *px, int fd[]);
+void	init_pipex(t_pipe *pipex);
+void	parsing(char **av, char *envp[], t_pipe *px);
 
 //		--error.c--		//
 void	print_error(char *msg, int flag, t_pipe *px);
 void	ft_free(t_pipe *px);
-char	*ft_substr_path(char *s, int start, int len);
+void	check_access(t_pipe *px, char **cmd, char **path);
+char	*check_paths(char **paths, char *cmd, t_pipe *px);
 
 //		--utils.c--		//
-char	**final_cmd(char *s, t_pipe *pipex, int i);
-char	**ft_split_quote(t_pipe *pipex, char *s, char c);
-char	**ft_split_pipex(t_pipe *pipex, char *s, char c, int i);
 char	**del_quotes(t_pipe *px, char *s, char c, char **arr);
-void	check_access(t_pipe *px, char **cmd, char **path);
+char	**ft_split_quote(t_pipe *pipex, char *s, char c);
+char	*ft_substr_path(char *s, int start, int len);
+char	**ft_split_pipex(t_pipe *pipex, char *s, char c, int i, int flag);
+char	**final_cmd(char *s, t_pipe *pipex, int i);
 
 //		--aux.c--		//
 int		cmd_count(char *s, char c);
 int		w_count(char *s, char c);
 void	ft_start_quote(t_pipe *px, char *s, char c);
 char	*ft_substr_slash(char *s, int start, int len, int i);
-char	*check_paths(char **paths, char *cmd, t_pipe *px);
 
 #endif

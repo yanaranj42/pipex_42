@@ -6,7 +6,7 @@
 /*   By: yanaranj <yanaranj@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:23:25 by yanaranj          #+#    #+#             */
-/*   Updated: 2024/04/16 14:07:44 by yanaranj         ###   ########.fr       */
+/*   Updated: 2024/04/16 19:02:04 by yanaranj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ void	check_access(t_pipe *px, char **cmd, char **path)
 char *check_paths(char **paths, char *cmd, t_pipe *px)
 {
 	char	*p;
+	px->i = -1;
 
 	while (paths[++px->i])
 	{
