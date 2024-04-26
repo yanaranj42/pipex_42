@@ -1,17 +1,3 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: yanaranj <yanaranj@student.42barcel>       +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/10/28 14:32:13 by yanaranj          #+#    #+#              #
-#    Updated: 2023/11/15 12:29:51 by yanaranj         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
-#VAR
-
 NAME = libft.a
 SRC	=	ft_isalpha.c	\
 		ft_isdigit.c	\
@@ -62,16 +48,18 @@ AR	= ar rcs
 all : $(NAME)
 
 %.o	: %.c $(HEADER) Makefile
-	$(CFLAGS) -c $< -o $@
+	@$(CFLAGS) -c $< -o $@
 
 $(NAME) : $(OBJS)
 	@$(AR) $(NAME) $(OBJS)
 
 clean:	
-	rm -f $(OBJS)
+	@rm -f $(OBJS)
+#	@echo "$(RED)OBJECTS DELETED$(END)"
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
+#	@echo "$(RED)EXEC DELETED$(END)"
 
 re:	fclean all
 
