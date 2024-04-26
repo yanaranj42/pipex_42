@@ -6,7 +6,7 @@
 /*   By: yanaranj <yanaranj@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 14:05:48 by yanaranj          #+#    #+#             */
-/*   Updated: 2024/04/16 19:01:21 by yanaranj         ###   ########.fr       */
+/*   Updated: 2024/04/24 18:31:41 by yanaranj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,19 @@ char	**del_quotes(t_pipe *px, char *s, char c, char **arr)
 	{
 		ft_start_quote(px, s, c);
 		if ((s[px->i] != ' ' && (s[px->i + 1] == ' ' || !s[px->i + 1]) \
-					&& px->flag == 0)|| (s[px->i] == c && (s[px->i + 1] == ' ' \
+					&& px->flag == 0) || (s[px->i] == c && (s[px->i + 1] == ' ' \
 				|| !s[px->i + 1]) && px->flag == 1 && s[px->i - 1] != '\\'))
 		{
 			if (px->flag == 1)
-				arr[++px->n] = ft_substr_slash(s, px->start, \
-						(px->i - px->start), -1);
+				arr[++px->n] = ft_substr_slash(s, px->str, \
+						(px->i - px->str), -1);
 			else
-				arr[++px->n] = ft_substr_slash(s, px->start, \
-						(px->i - px->start + 1), -1);
+				arr[++px->n] = ft_substr_slash(s, px->str, \
+						(px->i - px->str + 1), -1);
 			if (!arr[px->n] && px->n > 0)
 			{
-				ft_free(px);
-				print_error("malloc", 0, px);
+				ft_free(arr);
+				print_error("malloc", 0, px, NULL);
 			}
 			if (px->flag == 1)
 				px->flag = 0;
@@ -42,34 +42,35 @@ char	**del_quotes(t_pipe *px, char *s, char c, char **arr)
 
 char	**ft_split_quote(t_pipe *px, char *s, char c)
 {
-	char **arr;
+	char	**arr;
 
 	px->i = -1;
 	px->n = -1;
-	arr = malloc(sizeof(char *) * (cmd_count(s, c) + 1));
+	arr = (char **)malloc(sizeof(char *) * (cmd_count(s, c) + 1));
 	if (!arr)
-		print_error("malloc error", 0, px);
+		print_error("malloc error", 0, px, NULL);
 	px->flag = 0;
 	return (del_quotes(px, s, c, arr));
 }
-char	*ft_substr_path(char *s, int start, int len)
+
+char	*ft_substr_path(char *s, int str, int len)
 {
 	char	*sub;
 	int		i;
 	int		size;
 
 	size = ft_strlen(s);
-	if (start >= size)
+	if (str >= size)
 		return (ft_strdup(""));
-	if (len > size - start)
-		len = size - start;
+	if (len > size - str)
+		len = size - str;
 	sub = malloc(sizeof(char *) * len + 2);
 	if (!sub)
 		return (NULL);
 	i = 0;
 	while (i < len)
 	{
-		sub[i] = s[i + start];
+		sub[i] = s[i + str];
 		i++;
 	}
 	sub[i] = '/';
@@ -77,37 +78,31 @@ char	*ft_substr_path(char *s, int start, int len)
 	return (sub);
 }
 
-char	**ft_split_pipex(t_pipe *pipex, char *s, char c, int i, int flag)
+char	**ft_split_pipex(t_pipe *px, char *s, char c, int i)
 {
-	int		k;
-	char	**path;
-	int		start;
+	char	**arr;
 
-	k = -1;
-	path = (char **)malloc(sizeof(char *) * (w_count(s, c) + 1));
-	if (!path)
-		print_error("malloc error", 0, pipex);
+	arr = (char **)malloc(sizeof(char *) * (w_count(s, c) + 1));
+	if (!arr)
+		print_error("malloc error", 0, px, NULL);
 	while (*s && s[++i])
 	{
 		if (s[i] != c && i == 0)
-			start = i;
+			px->str = i;
 		else if (s[i] != c && i > 0 && s[i - 1] == c)
-			start = i;
+			px->str = i;
 		if (s[i] != c && (s[i + 1] == c || s[i + 1] == '\0'))
 		{
-			if (flag == 1)
-				path[++k] = ft_substr(s, start, (i - start + 1));
+			if (px->flag == 1)
+				arr[++px->k] = ft_substr(s, px->str, (i - px->str + 1));
 			else
-				path[++k] = ft_substr_path(s, start, (i - start + 1));
-			if (!path[k] && k > 0)
-			{
-				ft_free(pipex);
-				print_error("malloc error", 0, pipex);
-			}
+				arr[++px->k] = ft_substr_path(s, px->str, (i - px->str + 1));
+			if (!arr[px->k] && px->k > 0)
+				print_error("malloc error", 0, px, arr);
 		}
 	}
-	path[++k] = NULL;
-	return (path);
+	arr[++px->k] = NULL;
+	return (arr);
 }
 
 char	**final_cmd(char *s, t_pipe *pipex, int i)
@@ -122,10 +117,13 @@ char	**final_cmd(char *s, t_pipe *pipex, int i)
 			first = s[i];
 			break ;
 		}
-		if (!first)
-			return (ft_split_pipex(pipex, s, ' ', -1, 1));
-		else
-			return (ft_split_quote(pipex, s, first));
 	}
+	if (!first)
+	{
+		pipex->flag = 1;
+		return (ft_split_pipex(pipex, s, ' ', -1));
+	}
+	else
+		return (ft_split_quote(pipex, s, first));
 	return (NULL);
 }

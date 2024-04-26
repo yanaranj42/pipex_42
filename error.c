@@ -6,18 +6,20 @@
 /*   By: yanaranj <yanaranj@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:23:25 by yanaranj          #+#    #+#             */
-/*   Updated: 2024/04/16 19:02:04 by yanaranj         ###   ########.fr       */
+/*   Updated: 2024/04/25 18:36:41 by yanaranj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	print_error(char *msg, int flag, t_pipe *px)
+void	print_error(char *msg, int flag, t_pipe *px, char **arr)
 {
 	if (px)
-		ft_free(px);
+		clean_px(px);
 	write(2, "pipex: ", 7);
-	if (flag ==  0)
+	if (arr)
+		ft_free(arr);
+	if (flag == 0)
 		perror(msg);
 	else
 	{
@@ -26,41 +28,40 @@ void	print_error(char *msg, int flag, t_pipe *px)
 	}
 	exit(errno);
 }
-/*
-void	free_cmd(char *cmd1, char *cmd2);
-{
-	while(cmd1[i])
-}*/
 
-void	ft_free(t_pipe *px)
+void	clean_px(t_pipe *px)
 {
-	int	i;
+	if (px && px->path1 != NULL)
+		free(px->path1);
+	if (px && px->path2)
+		free(px->path2);
+	if (px && px->paths)
+		ft_free(px->paths);
+	if (px && px->in_cmd)
+		ft_free(px->in_cmd);
+	if (px && px->out_cmd)
+		ft_free(px->out_cmd);
+	free(px);
+	px = NULL;
+}
 
-	i = -1;
-	if (px->paths != NULL)
+void	ft_free(char **arr)
+{
+	int	n;
+
+	n = -1;
+	while (n > 0)
+		free(arr[n--]);
+	if (n == 0)
+		free(arr[n]);
+	if (n < 0)
 	{
-		while(px->paths[++i])
+		while (arr[++n])
 		{
-			free(px->paths[i]);
-			px->paths[i] = NULL;
+			free(arr[n]);
 		}
-		free(px->paths);
-		px->paths = NULL;
-	}
-	i = -1;
-	if (px->in_cmd != NULL && px->out_cmd != NULL)
-	{
-		while (px->in_cmd[++i] && px->out_cmd[++i])
-		{
-			free(px->in_cmd[i]);
-			free(px->out_cmd[i]);
-			px->in_cmd[i] = NULL;
-			px->out_cmd[i] = NULL;
-		}
-		free(px->in_cmd);
-		free(px->out_cmd);
-		px->in_cmd = NULL;
-		px->out_cmd = NULL;
+		free(arr);
+		arr = NULL;
 	}
 }
 
@@ -71,39 +72,39 @@ void	check_access(t_pipe *px, char **cmd, char **path)
 		if (access(cmd[0], F_OK) == 0)
 		{
 			if (access(cmd[0], X_OK) != 0)
-				print_error(ft_strjoin(cmd[0], "- permission denied2\n"), \
-					   126, px);
+				print_error(ft_strjoin(cmd[0], "- permission denied\n"), \
+						126, px, NULL);
 			*path = ft_strdup(cmd[0]);
 		}
 		else
-			print_error(ft_strjoin(cmd[0], "- command not found2\n"), 127, px);
+			print_error(ft_strjoin(cmd[0], "- command not found\n"), \
+						127, px, NULL);
 	}
 	else
 		*path = ft_strdup(check_paths(px->paths, cmd[0], px));
 }
 
-char *check_paths(char **paths, char *cmd, t_pipe *px)
+char	*check_paths(char **paths, char *cmd, t_pipe *px)
 {
 	char	*p;
-	px->i = -1;
 
+	px->i = -1;
 	while (paths[++px->i])
 	{
 		p = ft_strjoin(paths[px->i], cmd);
+//		printf("check_paths: %s\n", p);
 		if (!p)
-		{
-			ft_free(px);
-			print_error("malloc error", 0, NULL);
-		}
+			print_error("malloc error", 0, NULL, paths);
 		if (access(p, F_OK) == 0)
 		{
 			if (access(p, X_OK) != 0)
-				print_error(ft_strjoin(cmd, ": permission denied1\n"), \
-						126, px);
+				print_error(ft_strjoin(cmd, ": permission denied\n"), \
+						126, px, NULL);
 			else
 				return (p);
+			free(p);
 		}
 	}
-	print_error(ft_strjoin(cmd, ": command not found1\n"), 127, px);
+	print_error(ft_strjoin(cmd, ": command not found\n"), 127, px, NULL);
 	return (NULL);
 }

@@ -17,27 +17,27 @@ SRCS_LIBFT = ./libft/libft.a
 MAKE_LIBFT = make -C libft
 
 %.o: %.c Makefile
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo "$(YELLOW)Compiling... $(END)$(patsubst $(DIR_BUILD)%,%,$@)"
 
 all: make_lib $(NAME)
 
 make_lib:
-	$(MAKE_LIBFT)
+	@$(MAKE_LIBFT) --no-print-directory
 
 -include $(DEPS)
 $(NAME): $(OBJS) $(SRCS_LIBFT)
-	$(CC) $(CFLAGS) $(OBJS) $(SRCS_LIBFT) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) $(SRCS_LIBFT) -o $(NAME)
 	@echo "$(GREEN)PIPEX DONE$(END)"
 
 clean:
 	@$(RM) $(OBJS) $(DEPS)
-	$(MAKE) -C ./libft clean
+	@$(MAKE) -C ./libft clean --no-print-directory
 	@echo "$(RED)OBJECTS DELETED$(END)"
 
 fclean: clean
 	@$(RM) $(NAME)
-	@$(MAKE) -C ./libft fclean
+	@$(MAKE) -C ./libft fclean --no-print-directory
 	@echo "$(RED)EXEC DELETED $(END)"
 
 re: fclean all
