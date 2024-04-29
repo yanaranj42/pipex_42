@@ -12,44 +12,23 @@
 
 #include "pipex.h"
 
-void	child_process(char *envp[], char *infile, t_pipe *px, int fd[])
-{
-	close(fd[0]);
-	px->in_fd = open(infile, O_RDONLY);
-	if (px->in_fd == -1)
-		print_error(infile, 0, px, NULL);
-	check_access(px, px->in_cmd, &(px->path1));
-	if (dup2(px->in_fd, STDIN_FILENO) < 0)
-	{
-		close(px->in_fd);
-		print_error("dup2: error file descriptor", 0, px, NULL);
-	}
-	close(px->in_fd);
-	if (dup2(fd[1], STDOUT_FILENO) < 0)
-		print_error("dup2: error file descriptor", 0, px, NULL);
-	close(fd[1]);
-	if (execve(px->path1, px->in_cmd, envp) == -1)
-		print_error(px->in_cmd[0], 0, px, NULL);
-}
+//PROCESOS
 
-void	parent_process(char *envp[], char *outfile, t_pipe *px, int fd[])
+void    init_paths(t_pipe *px, char **envp)
 {
-	close(fd[1]);
-	px->out_fd = open(outfile, O_TRUNC | O_CREAT | O_RDWR, 0644);
-	if (px->out_fd == -1)
-		print_error(strerror(1), 1, px, NULL);
-	check_access(px, px->out_cmd, &(px->path2));
-	if (dup2(px->out_fd, STDOUT_FILENO) < 0)
-	{
-		close(px->out_fd);
-		print_error("dup2: error file descriptor", 0, px, NULL);
-	}
-	close(px->out_fd);
-	if (dup2(fd[0], STDIN_FILENO) < 0)
-		print_error("dup2: file descriptor", 0, px, NULL);
-	close(fd[0]);
-	if (execve(px->path2, px->out_cmd, envp) == -1)
-		print_error(px->out_cmd[0], 0, px, NULL);
+    int i;
+
+    i = -1;
+    while (envp[++i])
+    {
+        if (ft_strncmp(envp[i], "PATH=", 5) == 0)
+        {
+            px->paths = ft_split_px(px, envp[i] + 5, ':', -1);
+            break ;
+        }
+    }
+    if (!px->paths)
+		px->paths = ft_split_px(px, DEF_PATH, ':', -1);
 }
 
 void	init_pipex(t_pipe *pipex)
@@ -67,27 +46,22 @@ void	init_pipex(t_pipe *pipex)
 	pipex->path2 = NULL;
 }
 
-void	parsing(char **av, char *envp[], t_pipe *px)
+void    parsing(t_pipe *px, char **av, char **envp)
 {
-	int	i;
-
-	i = -1;
-	init_pipex(px);
-	px->in_cmd = final_cmd(av[2], px, -1);
+    init_pipex(px);
+    init_paths(px, envp);
+	printf("ALL_PATH: %s\n", *px->paths);
+    px->in_cmd = final_cmd(av[2], px, 1);
 	px->k = -1;
-	px->out_cmd = final_cmd(av[3], px, -1);
-	px->flag = 0;
-	px->k = -1;
-	while (envp[++i])
-	{
-		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
-		{
-			px->paths = ft_split_pipex(px, envp[i] + 5, ':', -1);
-			break ;
-		}
-	}
-	if (!px->paths)
-		px->paths = ft_split_pipex(px, DEF_PATH, ':', -1);
+	printf("IN_CMD: %s\n", *px->in_cmd);
+    px->out_cmd = final_cmd(av[3], px, 1);
+	printf("OUT_CMD: %s\n", *px->out_cmd);
+    check_access(px, px->in_cmd, -1);
+	printf("Ha funcionado\n");
+    check_access(px, px->out_cmd, -1);
+    //mirar si lo podemos eliminar porque era para el split_px
+    px->flag = 0; 
+    px->k = -1;
 }
 
 int	main(int ac, char **av, char *envp[])
@@ -102,7 +76,7 @@ int	main(int ac, char **av, char *envp[])
 	px = malloc(sizeof(t_pipe));
 	if (!px)
 		print_error("malloc error", 1, NULL, NULL);
-	parsing(av, envp, px);
+	parsing(px, av, envp);
 	if (pipe(fd) < 0)
 		print_error("pipe error", 1, px, NULL);
 	pid = fork();

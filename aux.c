@@ -94,3 +94,24 @@ char	*ft_substr_slash(char *s, int str, int len, int i)
 	m[i] = '\0';
 	return (m);
 }
+
+char	*px_strjoin(char *path, char *buf)
+{
+	size_t		i;
+	size_t		j;
+	char		*str;
+
+	i = 0;
+	str = malloc(sizeof(char) * ((ft_strlen(path) + ft_strlen(buf)) + 1));
+	if (!str)
+		return (NULL);
+	i = -1;
+	j = 0;
+	while (path && path[++i] != '\0')
+		str[i] = path[i];
+	while (buf && buf[j] != '\0')
+		str[i++] = buf[j++];
+	str[i] = '\0';
+	free(path);
+	return (str);
+}

@@ -42,29 +42,32 @@ typedef struct s_pipe
 }			t_pipe;
 
 //		--main.c--		//
-void	child_process(char *envp[], char *infile, t_pipe *px, int fd[]);
-void	parent_process(char *envp[], char *outfile, t_pipe *px, int fd[]);
+void    init_paths(t_pipe *px, char **envp);
 void	init_pipex(t_pipe *pipex);
-void	parsing(char **av, char *envp[], t_pipe *px);
+void    parsing(t_pipe *px, char **av, char **envp);
 
 //		--error.c--		//
-void	print_error(char *msg, int flag, t_pipe *px, char **arr);
-void	clean_px(t_pipe *px);
 void	ft_free(char **arr);
-void	check_access(t_pipe *px, char **cmd, char **path);
-char	*check_paths(char **paths, char *cmd, t_pipe *px);
+void	clean_px(t_pipe *px);
+int	    print_error(char *msg, int flag, t_pipe *px);
+char	*check_access(t_pipe *px, char **cmd, int i);
 
 //		--utils.c--		//
 char	**del_quotes(t_pipe *px, char *s, char c, char **arr);
 char	**ft_split_quote(t_pipe *px, char *s, char c);
-char	*ft_substr_path(char *s, int start, int len);
-char	**ft_split_pipex(t_pipe *pipex, char *s, char c, int i);
-char	**final_cmd(char *s, t_pipe *px, int i);
+char	*ft_substr_path(char *s, int str, int len);
+char	**ft_split_px(t_pipe *px, char *s, char c, int i);
+char	**final_cmd(char *s, t_pipe *pipex, int i);
 
 //		--aux.c--		//
-int		cmd_count(char *s, char c);
-int		w_count(char *s, char c);
+int     cmd_count(char *s, char c);
+int	    w_count(char *s, char c);
 void	ft_start_quote(t_pipe *px, char *s, char c);
-char	*ft_substr_slash(char *s, int start, int len, int i);
+char	*ft_substr_slash(char *s, int str, int len, int i);
+char	*px_strjoin(char *path, char *buf);
+
+//		--process.c--		//
+void	parent_process(char *envp[], char *outfile, t_pipe *px, int fd[]);
+void	child_process(char *envp[], char *infile, t_pipe *px, int fd[]);
 
 #endif

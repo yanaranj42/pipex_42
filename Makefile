@@ -5,11 +5,11 @@ NC = \033[0m
 YELLOW= \033[1;33m
 
 NAME = pipex
-CC = cc -g #-fsanitize=address
+CC = cc -g -fsanitize=address
 CFLAGS = -Wall -Werror -Wextra -MMD -I ./
 RM = rm -rf
 
-SRCS = main.c aux.c error.c utils.c
+SRCS = main.c aux.c error.c utils.c process.c
 OBJS = $(SRCS:%.c=%.o)
 DEPS = $(SRCS:%.c=%.d)
 

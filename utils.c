@@ -28,10 +28,7 @@ char	**del_quotes(t_pipe *px, char *s, char c, char **arr)
 				arr[++px->n] = ft_substr_slash(s, px->str, \
 						(px->i - px->str + 1), -1);
 			if (!arr[px->n] && px->n > 0)
-			{
-				ft_free(arr);
-				print_error("malloc", 0, px, NULL);
-			}
+				print_error("malloc", 0, px, arr);
 			if (px->flag == 1)
 				px->flag = 0;
 		}
@@ -53,7 +50,7 @@ char	**ft_split_quote(t_pipe *px, char *s, char c)
 	return (del_quotes(px, s, c, arr));
 }
 
-char	*ft_substr_path(char *s, int str, int len)
+char	*ft_substr_path(char *s, int str, int len) //check para liberar
 {
 	char	*sub;
 	int		i;
@@ -75,10 +72,12 @@ char	*ft_substr_path(char *s, int str, int len)
 	}
 	sub[i] = '/';
 	sub[i + 1] = '\0';
+	printf("SUBPATH: %s\n", sub);
 	return (sub);
 }
 
-char	**ft_split_pipex(t_pipe *px, char *s, char c, int i)
+//REVISAR LA LIBERACION DEL SUBPATH HAY QUE LIBERAR AQUI
+char	**ft_split_px(t_pipe *px, char *s, char c, int i)
 {
 	char	**arr;
 
@@ -93,10 +92,7 @@ char	**ft_split_pipex(t_pipe *px, char *s, char c, int i)
 			px->str = i;
 		if (s[i] != c && (s[i + 1] == c || s[i + 1] == '\0'))
 		{
-			if (px->flag == 1)
-				arr[++px->k] = ft_substr(s, px->str, (i - px->str + 1));
-			else
-				arr[++px->k] = ft_substr_path(s, px->str, (i - px->str + 1));
+			arr[++px->k] = ft_substr_path(s, px->str, (i - px->str + 1));
 			if (!arr[px->k] && px->k > 0)
 				print_error("malloc error", 0, px, arr);
 		}
@@ -120,8 +116,9 @@ char	**final_cmd(char *s, t_pipe *pipex, int i)
 	}
 	if (!first)
 	{
-		pipex->flag = 1;
-		return (ft_split_pipex(pipex, s, ' ', -1));
+		pipex->flag = 1; //check el uso de esta flag
+		return (ft_split(s, ' '));
+	//	return (ft_split_pipex(pipex, s, ' ', -1));
 	}
 	else
 		return (ft_split_quote(pipex, s, first));
