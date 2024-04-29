@@ -19,6 +19,9 @@ void	parent_process(char *envp[], char *outfile, t_pipe *px, int fd[])
 		print_error("dup2: error file descriptor", 0, px);
 	}
 	close(px->out_fd);
+	// printf("Parent_path2: %s\n", px->path2);
+	// printf("Parent_cmd2: %s\n", px->out_cmd[0]);
+	// printf("Parent_cmd2: %s\n", px->out_cmd[1]);
 	if (execve(px->path2, px->out_cmd, envp) == -1)
 		print_error(px->out_cmd[0], 0, px);
     close(fd[0]);
@@ -26,6 +29,9 @@ void	parent_process(char *envp[], char *outfile, t_pipe *px, int fd[])
 
 void	child_process(char *envp[], char *infile, t_pipe *px, int fd[])
 {
+	printf("Parent_path1: %s\n", px->path1);
+	printf("Parent_cmd1: %s\n", px->in_cmd[0]);
+	printf("Parent_cmd1: %s\n", px->in_cmd[1]);
 	close(fd[0]);
 	px->in_fd = open(infile, O_RDONLY);
 	if (px->in_fd == -1)

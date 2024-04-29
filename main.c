@@ -54,8 +54,8 @@ void    parsing(t_pipe *px, char **av, char **envp)
     px->in_cmd = final_cmd(av[2], px, 1);
 	px->k = -1;
     px->out_cmd = final_cmd(av[3], px, 1);
-    check_access(px, px->in_cmd, -1);
-    check_access(px, px->out_cmd, -1);
+    px->path1 = check_access(px, px->in_cmd, -1);
+    px->path2 = check_access(px, px->out_cmd, -1);
     //mirar si lo podemos eliminar porque era para el split_px
     px->flag = 0; 
     px->k = -1;
@@ -81,8 +81,8 @@ int	main(int ac, char **av, char *envp[])
 		print_error("fork error", 1, px);
 	if (pid == 0)
 		child_process(envp, av[1], px, fd);
-	else
-		parent_process(envp, av[4], px, fd);
 	waitpid(pid, NULL, 0);
+	if (pid != 0)
+		parent_process(envp, av[4], px, fd);
 	return (0);
 }

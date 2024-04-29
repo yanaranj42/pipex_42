@@ -112,6 +112,6 @@ char	*px_strjoin(char *path, char *buf)
 	while (buf && buf[j] != '\0')
 		str[i++] = buf[j++];
 	str[i] = '\0';
-	free(path);
+//	free(path);
 	return (str);
 }

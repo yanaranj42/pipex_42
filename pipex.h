@@ -33,7 +33,7 @@ typedef struct s_pipe
 	int		i;
 	int		n;
 	int		k;
-	int		str; //start
+	int		str;
 	char	**paths;
 	char	*path1;
 	char	*path2;
@@ -55,7 +55,8 @@ char	*check_access(t_pipe *px, char **cmd, int i);
 //		--utils.c--		//
 char	**del_quotes(t_pipe *px, char *s, char c, char **arr);
 char	**ft_split_quote(t_pipe *px, char *s, char c);
-char	*ft_substr_path(char *s, int str, int len);
+char	*px_barjoin(char *path, char *buf);
+//char	*ft_substr_path(char *s, int str, int len);
 char	*px_strtrim(char *s, char *set);
 //char	**ft_split_px(t_pipe *px, char *s, char c, int i);
 char	**final_cmd(char *s, t_pipe *pipex, int i);

@@ -50,54 +50,26 @@ char	**ft_split_quote(t_pipe *px, char *s, char c)
 	return (del_quotes(px, s, c, arr));
 }
 
-char	*ft_substr_path(char *s, int str, int len) //check para liberar
+char	*px_barjoin(char *path, char *buf)
 {
-	char	*sub;
-	int		i;
-	int		size;
+	size_t		i;
+	size_t		j;
+	char		*str;
 
-	size = ft_strlen(s);
-	if (str >= size)
-		return (ft_strdup(""));
-	if (len > size - str)
-		len = size - str;
-	sub = malloc(sizeof(char *) * len + 2);
-	if (!sub)
-		return (NULL);
 	i = 0;
-	while (i < len)
-	{
-		sub[i] = s[i + str];
-		i++;
-	}
-	sub[i] = '/';
-	sub[i + 1] = '\0';
-	printf("SUBPATH: %s\n", sub);
-	return (sub);
-}
-/*
-char	*px_strtrim(char *s, char *set, int j)
-{
-	char	*arr;
-	int		start;
-	int		len;
-
-	start = 0;
-	len = 0;
-	while (s[start] && ft_strchr(set, s[start]))
-		start++;
-	while (len > start && ft_strchr(set, s[len - 1]))
-		len--;
-	arr = malloc(sizeof(char *) * ((len - start) + 1));
-	if (!arr)
+	str = malloc(sizeof(char) * ((ft_strlen(path) + ft_strlen(buf)) + 1));
+	if (!str)
 		return (NULL);
-	while (start < len)
-		arr[j++] = s[start++];
-	arr[j] = '\0';
-	free(s);
-	return (arr);
+	i = -1;
+	j = 0;
+	while (path && path[++i] != '\0')
+		str[i] = path[i];
+	while (buf && buf[j] != '\0')
+		str[i++] = buf[j++];
+	str[i] = '\0';
+	return (str);
 }
-*/
+
 char	*px_strtrim(char *s1, char *set)
 {
 	size_t			start;
@@ -125,33 +97,6 @@ char	*px_strtrim(char *s1, char *set)
 	free(s1);
 	return (ret);
 }
-/*
-//REVISAR LA LIBERACION DEL SUBPATH HAY QUE LIBERAR AQUI
-char	**ft_split_px(t_pipe *px, char *s, char c, int i)
-{
-	char	**arr;
-
-	arr = (char **)malloc(sizeof(char *) * (w_count(s, c) + 1));
-	if (!arr)
-		print_error("malloc error", 0, px);
-	while (*s && s[++i])
-	{
-		if (s[i] != c && i == 0)
-			px->str = i;
-		else if (s[i] != c && i > 0 && s[i - 1] == c)
-			px->str = i;
-		if (s[i] != c && (s[i + 1] == c || s[i + 1] == '\0'))
-		{
-			arr[++px->k] = ft_substr_path(s, px->str, (i - px->str + 1));
-			//printf("ARR: %s\n", arr[px->k]);
-			if (!arr[px->k] && px->k > 0)
-				print_error("malloc error", 0, px);
-		}
-	}
-	arr[++px->k] = NULL;
-	return (arr);
-}
-*/
 
 char	**final_cmd(char *s, t_pipe *pipex, int i)
 {

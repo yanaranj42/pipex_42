@@ -5,7 +5,7 @@ NC = \033[0m
 YELLOW= \033[1;33m
 
 NAME = pipex
-CC = cc -g -fsanitize=address
+CC = cc -g #-fsanitize=address
 CFLAGS = -Wall -Werror -Wextra -MMD -I ./
 RM = rm -rf
 
