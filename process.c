@@ -1,4 +1,14 @@
-//header
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   process.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yanaranj <yanaranj@student.42barcel>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/29 19:07:13 by yanaranj          #+#    #+#             */
+/*   Updated: 2024/04/29 19:28:37 by yanaranj         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "pipex.h"
 
@@ -29,9 +39,6 @@ void	parent_process(char *envp[], char *outfile, t_pipe *px, int fd[])
 
 void	child_process(char *envp[], char *infile, t_pipe *px, int fd[])
 {
-	printf("Parent_path1: %s\n", px->path1);
-	printf("Parent_cmd1: %s\n", px->in_cmd[0]);
-	printf("Parent_cmd1: %s\n", px->in_cmd[1]);
 	close(fd[0]);
 	px->in_fd = open(infile, O_RDONLY);
 	if (px->in_fd == -1)
@@ -47,3 +54,4 @@ void	child_process(char *envp[], char *infile, t_pipe *px, int fd[])
 	if (execve(px->path1, px->in_cmd, envp) == -1)
 		print_error(px->in_cmd[0], 0, px);
 }
+
