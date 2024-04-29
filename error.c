@@ -17,15 +17,10 @@ void	print_error(char *msg, int flag, t_pipe *px)
 	if (px)
 		clean_px(px);
 	write(2, "pipex: ", 7);
-	if (flag == 0)
+	if (flag == 1)
 		perror(msg);
 	else
-	{
 		write(1, msg, ft_strlen(msg));
-		//free(msg);
-		exit(flag);
-	}
-	//free(msg);
 	exit(errno);
 }
 
@@ -61,24 +56,27 @@ char	*check_access(t_pipe *px, char **cmd, int i)
 {
 	char	*path;
 
+
 	while (px->paths[++i])
 	{
 		path = px_barjoin(px->paths[i], "/");
 		path = px_strjoin(path, cmd[0]);
-	//	printf("Print_path: %s\n", path);
+	//	printf("all_path: %s\n", path);
 
 		if (!path)
 			print_error("Malloc error", 0, px);
 		if (access(path, F_OK) == 0)
 		{
 			if (access(path, X_OK) != 0)
-				print_error("Execute access error\n", 126, px);
+				print_error(" -permission denied\n", 126, px);
 			else
 				return (path);
 		}
 		else
 			free(path);
 	}
-	print_error("You can't access to this file\n", 127, px);
+	//0 leaks con el ft_strjoin
+	print_error(ft_strjoin(cmd[0], ": No such a file or directory\n"), 127, px);
+	//print_error("No such a file or directory\n", 127, px);
 	return (0);
 }

@@ -42,7 +42,8 @@ void	child_process(char *envp[], char *infile, t_pipe *px, int fd[])
 	close(fd[0]);
 	px->in_fd = open(infile, O_RDONLY);
 	if (px->in_fd == -1)
-		print_error(infile, 0, px);
+		print_error(ft_strjoin(infile, ": this file does not exist\n"), 127, px);
+		//print_error(infile, 0, px);
 	if (dup2(px->in_fd, STDIN_FILENO) < 0)
 	{
 		close(px->in_fd);
