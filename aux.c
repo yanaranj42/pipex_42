@@ -80,7 +80,7 @@ char	*ft_substr_slash(char *s, int str, int len, int i)
 	i = 0;
 	m = (char *)malloc(size + 1);
 	if (!m)
-		print_error("malloc", 0, NULL, NULL);
+		print_error("malloc", 0, NULL);
 	while (i < size && s[i + str])
 	{
 		if (s[i + str] == '\\' && s[i + str + 1] == '\"')
