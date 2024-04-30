@@ -6,7 +6,7 @@
 /*   By: yanaranj <yanaranj@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 19:07:13 by yanaranj          #+#    #+#             */
-/*   Updated: 2024/04/29 19:28:37 by yanaranj         ###   ########.fr       */
+/*   Updated: 2024/04/30 17:31:57 by yanaranj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,23 +18,20 @@ void	parent_process(char *envp[], char *outfile, t_pipe *px, int fd[])
 	px->out_fd = open(outfile, O_TRUNC | O_CREAT | O_RDWR, 0644);
 	if (px->out_fd == -1)
 		print_error(strerror(1), 1, px);
-    if (dup2(fd[0], STDIN_FILENO) < 0)
-    {
-        close(px->in_fd);
+	if (dup2(fd[0], STDIN_FILENO) < 0)
+	{
+		close(px->in_fd);
 		print_error("dup2: error file descriptor", 0, px);
-    }
+	}
 	if (dup2(px->out_fd, STDOUT_FILENO) < 0)
 	{
 		close(px->out_fd);
 		print_error("dup2: error file descriptor", 0, px);
 	}
 	close(px->out_fd);
-	// printf("Parent_path2: %s\n", px->path2);
-	// printf("Parent_cmd2: %s\n", px->out_cmd[0]);
-	// printf("Parent_cmd2: %s\n", px->out_cmd[1]);
 	if (execve(px->path2, px->out_cmd, envp) == -1)
 		print_error(px->out_cmd[0], 0, px);
-    close(fd[0]);
+	close(fd[0]);
 }
 
 void	child_process(char *envp[], char *infile, t_pipe *px, int fd[])
@@ -42,8 +39,8 @@ void	child_process(char *envp[], char *infile, t_pipe *px, int fd[])
 	close(fd[0]);
 	px->in_fd = open(infile, O_RDONLY);
 	if (px->in_fd == -1)
-		print_error(ft_strjoin(infile, ": this file does not exist\n"), 127, px);
-		//print_error(infile, 0, px);
+		print_error(ft_strjoin(infile, ": this file does not exist\n"), \
+				127, px);
 	if (dup2(px->in_fd, STDIN_FILENO) < 0)
 	{
 		close(px->in_fd);
@@ -55,4 +52,3 @@ void	child_process(char *envp[], char *infile, t_pipe *px, int fd[])
 	if (execve(px->path1, px->in_cmd, envp) == -1)
 		print_error(px->in_cmd[0], 0, px);
 }
-

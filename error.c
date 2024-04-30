@@ -6,7 +6,7 @@
 /*   By: yanaranj <yanaranj@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 13:23:25 by yanaranj          #+#    #+#             */
-/*   Updated: 2024/04/25 18:36:41 by yanaranj         ###   ########.fr       */
+/*   Updated: 2024/04/30 17:21:52 by yanaranj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ void	clean_px(t_pipe *px)
 		ft_free(px->in_cmd);
 	if (px && px->out_cmd)
 		ft_free(px->out_cmd);
-    if (px)
-    	free(px);
+	if (px)
+		free(px);
 	px = NULL;
 }
 
@@ -46,23 +46,20 @@ void	ft_free(char **arr)
 	int	n;
 
 	n = -1;
-    while (arr[++n])
-        free(arr[n]);
-    free(arr);
-    arr = NULL;
+	while (arr[++n])
+		free(arr[n]);
+	free(arr);
+	arr = NULL;
 }
 
 char	*check_access(t_pipe *px, char **cmd, int i)
 {
 	char	*path;
 
-
 	while (px->paths[++i])
 	{
 		path = px_barjoin(px->paths[i], "/");
 		path = px_strjoin(path, cmd[0]);
-	//	printf("all_path: %s\n", path);
-
 		if (!path)
 			print_error("Malloc error", 0, px);
 		if (access(path, F_OK) == 0)
@@ -75,8 +72,6 @@ char	*check_access(t_pipe *px, char **cmd, int i)
 		else
 			free(path);
 	}
-	//0 leaks con el ft_strjoin
 	print_error(ft_strjoin(cmd[0], ": No such a file or directory\n"), 127, px);
-	//print_error("No such a file or directory\n", 127, px);
 	return (0);
 }

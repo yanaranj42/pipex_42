@@ -6,7 +6,7 @@
 /*   By: yanaranj <yanaranj@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 14:05:48 by yanaranj          #+#    #+#             */
-/*   Updated: 2024/04/24 18:31:41 by yanaranj         ###   ########.fr       */
+/*   Updated: 2024/04/30 17:32:45 by yanaranj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,12 +111,15 @@ char	**final_cmd(char *s, t_pipe *pipex, int i)
 			break ;
 		}
 	}
-	if (!first)
+	if (ft_strchr(s, '/'))
 	{
-	//	pipex->flag = 1; //check el uso de esta flag
-		return (ft_split(s, ' '));
-	//	return (ft_split_pipex(pipex, s, ' ', -1));
+		i = ft_strlen(s) - 1;
+		while (s[i] != '/')
+			i--;
+		s = ft_substr(s, i + 1, ft_strlen(s));
 	}
+	if (!first)
+		return (ft_split(s, ' '));
 	else
 		return (ft_split_quote(pipex, s, first));
 	return (NULL);
